@@ -1,2 +1,2 @@
-shopapi
+ShopsAPI
 =======
