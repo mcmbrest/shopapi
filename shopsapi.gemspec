@@ -29,8 +29,7 @@ Gem::Specification.new do |s|
     "lib/ebay/railtie.rb",
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
-    "lib/shopapi.rb",
-    "shopsapi.gemspec"
+    "lib/shopsapi.rb"
   ]
   s.homepage = "https://github.com/mcmbrest/shopapi.git"
   s.require_paths = ["lib"]
