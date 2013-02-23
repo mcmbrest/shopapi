@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
     "lib/shopapi.rb",
-    "shopapi-0.0.5.gem",
     "shopapi.gemspec"
   ]
   s.homepage = "https://github.com/mcmbrest/shopapi.git"
