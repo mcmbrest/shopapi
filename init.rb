@@ -1,1 +1,1 @@
-require File.join(File.dirname(__FILE__), "lib", "shopsapi")
+require File.join(File.dirname(__FILE__), "lib", "shopapi")

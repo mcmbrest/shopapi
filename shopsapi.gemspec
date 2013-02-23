@@ -4,8 +4,8 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "shopapi"
-  s.version = "0.0.5"
+  s.name = "shopsapi"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mihail Muhov"]
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
     "lib/shopapi.rb",
-    "shopapi.gemspec"
+    "shopsapi.gemspec"
   ]
   s.homepage = "https://github.com/mcmbrest/shopapi.git"
   s.require_paths = ["lib"]

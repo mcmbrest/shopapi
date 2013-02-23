@@ -3,7 +3,7 @@ require "rake"
 begin
   require "jeweler"
   Jeweler::Tasks.new do |gem|
-    gem.name = "shopapi"
+    gem.name = "shopsapi"
     gem.summary = "JSON response for eBay FindingAPI, ShoppingApi and Amazon Product Advertising API"
     gem.homepage = "https://github.com/mcmbrest/shopapi.git"
     gem.authors = ["Mihail Muhov"]
