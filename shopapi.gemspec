@@ -30,12 +30,12 @@ Gem::Specification.new do |s|
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
     "lib/shopapi.rb",
-    "shopapi-0.0.1.gem",
+    "shopapi-0.0.5.gem",
     "shopapi.gemspec"
   ]
   s.homepage = "https://github.com/mcmbrest/shopapi.git"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.25"
   s.summary = "JSON response for eBay FindingAPI, ShoppingApi and Amazon Product Advertising API"
 
   if s.respond_to? :specification_version then
