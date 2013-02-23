@@ -2,8 +2,8 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-module ShopsApi
-  class EbayApi
+module ShopApi
+  class Ebay
     # default site is EBAY_US, for other available sites see eBay documentation:
     # http://developer.ebay.com/DevZone/merchandising/docs/Concepts/SiteIDToGlobalID.html
     EBAY_US = 0
@@ -41,7 +41,7 @@ module ShopsApi
     protected
     
     def get_json_response(url)
-      Rebay::Response.new(JSON.parse(Net::HTTP.get_response(URI.parse(url)).body))
+      ShopApi::Response.new(JSON.parse(Net::HTTP.get_response(URI.parse(url)).body))
     end
 
     def build_rest_payload(params)

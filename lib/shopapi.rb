@@ -5,4 +5,3 @@ require 'ebay/response'
 
 require 'amazon/api'
 require 'amazon/amazon'
-require 'amazon/response'

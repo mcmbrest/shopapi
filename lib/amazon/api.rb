@@ -6,15 +6,11 @@ require 'hmac-sha2'
 require 'base64'
 require 'openssl' 
 
-module ShopsApi
+module ShopApi
   class RequestError < StandardError; end
   
-  class Ecs
+  class Amazon
     VERSION = '2.2.4'
-    
-    SERVICE_URLS = {
-        :us => 'http://ecs.amazonaws.com/onca/xml',
-    }
     
     OPENSSL_DIGEST_SUPPORT = OpenSSL::Digest.constants.include?( 'SHA256' ) ||
                              OpenSSL::Digest.constants.include?( :SHA256 )
@@ -28,34 +24,36 @@ module ShopsApi
     
     @@debug = false
 
-    # Default search options
-    def self.options
-      @@options
-    end
-    
-    # Set default search options
-    def self.options=(opts)
-      @@options = opts
-    end
-    
-    # Get debug flag.
-    def self.debug
-      @@debug
-    end
-    
-    # Set debug flag to true or false.
-    def self.debug=(dbg)
-      @@debug = dbg
-    end
-    
-    def self.configure(&proc)
-      raise ArgumentError, "Block is required." unless block_given?
-      yield @@options
+    class << self
+      # Default search options
+      def options
+        @@options
+      end
+      
+      # Set default search options
+      def options=(opts)
+        @@options = opts
+      end
+      
+      # Get debug flag.
+      def debug
+        @@debug
+      end
+      
+      # Set debug flag to true or false.
+      def debug=(dbg)
+        @@debug = dbg
+      end
+      
+      def configure(&proc)
+        raise ArgumentError, "Block is required." unless block_given?
+        yield @@options
+      end
     end
     
     protected
-      def self.log(s)
-        return unless self.debug
+      def log(s)
+        return unless self.class.debug
         if defined? RAILS_DEFAULT_LOGGER
           RAILS_DEFAULT_LOGGER.error(s)
         elsif defined? LOGGER
@@ -64,13 +62,18 @@ module ShopsApi
           puts s
         end
       end
+
+      def get_response(url)
+        res = Net::HTTP.get_response(URI::parse(url))
+        unless res.kind_of? Net::HTTPSuccess
+          raise ShopApi::RequestError, "HTTP Response: #{res.code} #{res.message}"
+        end
+        ShopApi::Response.new(JSON.parse(Hash.from_xml(res.body).to_json))
+      end
       
-    private 
-      def self.prepare_url(opts)
-        country = opts.delete(:country)
-        country = (country.nil?) ? 'us' : country
-        request_url = SERVICE_URLS[country.to_sym]
-        raise Amazon::RequestError, "Invalid country '#{country}'" unless request_url
+
+      def prepare_url(opts)
+        request_url = 'http://ecs.amazonaws.com/onca/xml'
 
         secret_key = opts.delete(:AWS_secret_key)
         request_host = URI.parse(request_url).host
@@ -104,17 +107,17 @@ module ShopsApi
         "#{request_url}?#{qs}#{signature}"
       end
       
-      def self.url_encode(string)
+      def url_encode(string)
         string.gsub( /([^a-zA-Z0-9_.~-]+)/ ) do
           '%' + $1.unpack( 'H2' * $1.bytesize ).join( '%' ).upcase
         end
       end
       
-      def self.camelize(s)
+      def camelize(s)
         s.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
       end
       
-      def self.sign_request(url, key)
+      def sign_request(url, key)
         return nil if key.nil?
         
         if (OPENSSL_DIGEST_SUPPORT)

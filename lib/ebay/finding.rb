@@ -1,5 +1,5 @@
-module ShopsApi
-  class Finding < ShopsApi::EbayApi
+module ShopApi
+  class Finding < ShopApi::Ebay
     def self.base_url_suffix
       "ebay.com/services/search/FindingService/v1"
     end
@@ -7,9 +7,8 @@ module ShopsApi
     VERSION = '1.0.0'
     
     #generate request url
-    def get_url(params)
-      raise ArgumentError unless params[:keywords] or params[:categoryId]
-      return build_request_url('findItemsAdvanced', params)
+    def get_url(service=nil, params)
+      return build_request_url((service.nil? ? 'findItemsAdvanced' : service), params)
     end
     
     #http://developer.ebay.com/DevZone/finding/CallRef/findItemsAdvanced.html
@@ -100,7 +99,7 @@ module ShopsApi
     
     private    
     def build_request_url(service, params=nil)
-      url = "#{self.class.base_url}?OPERATION-NAME=#{service}&SERVICE-VERSION=#{VERSION}&SECURITY-APPNAME=#{Rebay::Api.app_id}&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
+      url = "#{self.class.base_url}?OPERATION-NAME=#{service}&SERVICE-VERSION=#{VERSION}&SECURITY-APPNAME=#{ShopApi::Ebay.app_id}&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
       url += build_rest_payload(params)
       return url
     end

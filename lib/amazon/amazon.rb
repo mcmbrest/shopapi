@@ -1,57 +1,78 @@
-module ShopsApi
-  class Amazon < ShopsApi::Ecs
+module ShopApi
+  class Ecs < ShopApi::Amazon
     # Search amazon items with search terms. Default search index option is 'Books'.
     # For other search type other than keywords, please specify :type => [search type param name].
-    def self.item_search(terms, opts = {})
+    def item_search(keywords, opts = {})
       opts[:operation] = 'ItemSearch'
-      opts[:search_index] = opts[:search_index] || 'Books'
+      opts[:search_index] ||= 'All'
+      opts[:keywords] = keywords
       
-      type = opts.delete(:type)
-      if type 
-        opts[type.to_sym] = terms
-      else 
-        opts[:keywords] = terms
+      response = get_response(bild_request(opts))
+      response.trim(:ItemSearchResponse)
+      if response.response.has_key?('Items') && response.response['Items'].has_key?('Item')
+        response.results = response.response['Items']['Item']
       end
-      
-      self.send_request(opts)
+      return response
     end
 
     # Search an item by ASIN no.
-    def self.item_lookup(item_id, opts = {})
+    def item_lookup(item_id, opts = {})
+      raise ArgumentError unless item_id
       opts[:operation] = 'ItemLookup'
       opts[:item_id] = item_id
       
-      self.send_request(opts)
+      response = get_response(bild_request(opts))
+      response.trim(:ItemLookupResponse)
+      if response.response.has_key?('Items') && response.response['Items'].has_key?('Item')
+        response.results = response.response['Items']['Item']
+      end
+      return response
     end    
 
     # Search a browse node by BrowseNodeId
-    def self.browse_node_lookup(browse_node_id, opts = {})
+    def browse_node_lookup(browse_node_id, opts = {})
+      raise ArgumentError unless browse_node_id
       opts[:operation] = 'BrowseNodeLookup'
       opts[:browse_node_id] = browse_node_id
       
-      self.send_request(opts)
+      response = get_response(bild_request(opts))
+      response.trim(:BrowseNodeLookupResponse)
+      if response.response.has_key?('BrowseNodes') && response.response['BrowseNodes'].has_key?('BrowseNode')
+        response.results = response.response['BrowseNodes']['BrowseNode']
+      end
+      return response
+    end    
+
+    # Search a similar items node by ItemId
+    def similarity_lookup(item_id, opts = {})
+      raise ArgumentError unless item_id
+      opts[:operation] = 'SimilarityLookup'
+      opts[:item_id] = item_id
+      
+      response = get_response(bild_request(opts))
+      response.trim(:SimilarityLookupResponse)
+      if response.response.has_key?('Items') && response.response['Items'].has_key?('Item')
+        response.results = response.response['Items']['Item']
+      end
+      return response
     end    
     
     # Generic send request to ECS REST service. You have to specify the :operation parameter.
-    def self.send_request(opts)
-      opts = self.options.merge(opts) if self.options
+    def bild_request(opts)
+      opts = self.class.options.merge(opts) if self.class.options
       
       # Include other required options
       opts[:timestamp] = Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+      opts[:ResponseGroup] = 'Medium'
 
       request_url = prepare_url(opts)
       log "Request URL: #{request_url}"
       
-      res = Net::HTTP.get_response(URI::parse(request_url))
-      unless res.kind_of? Net::HTTPSuccess
-        raise ShopsApi::RequestError, "HTTP Response: #{res.code} #{res.message}"
-      end
-      res = JSON.parse(Hash.from_xml(res.body).to_json)
-      Response.new(res)
+      return request_url 
     end
     
-    def self.validate_request(opts) 
-      raise ShopsApi::RequestError, "" if opts[:associate_tag]
+    def validate_request(opts) 
+      raise ShopApi::RequestError, "" if opts[:associate_tag]
     end
     
   end

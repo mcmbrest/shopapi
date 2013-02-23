@@ -4,17 +4,18 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "shopsapi"
-  s.version = "1.0.0"
+  s.name = "shopapi"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["MCM"]
+  s.authors = ["Mihail Muhov"]
   s.date = "2013-02-22"
   s.extra_rdoc_files = [
     "README.md"
   ]
   s.files = [
     "Gemfile",
+    "Gemfile.lock",
     "MIT-LICENSE",
     "README.md",
     "Rakefile",
@@ -29,9 +30,9 @@ Gem::Specification.new do |s|
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
     "lib/shopsapi.rb",
-    "shopsapi.gemspec"
+    "xxxshopapi-1.0.0.gem"
   ]
-  s.homepage = "https://github.com/mcmbrest/shopsapi.git"
+  s.homepage = "https://github.com/mcmbrest/shopapi.git"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
   s.summary = "JSON response for eBay FindingAPI, ShoppingApi and Amazon Product Advertising API"

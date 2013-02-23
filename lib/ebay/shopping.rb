@@ -1,5 +1,5 @@
-module ShopsApi
-  class Shopping < ShopsApi::ShopsApi
+module ShopApi
+  class Shopping < ShopApi::Ebay
     VERSION = '793'
     
     class << self
@@ -13,9 +13,8 @@ module ShopsApi
     end
     
     #generate request url
-    def get_url(params)
-      raise ArgumentError unless params[:keywords] or params[:categoryId]
-      return build_request_url('findItemsAdvanced', params)
+    def get_url(service=nil, params)
+      return build_request_url((service.nil? ? 'GetSingleItem' : service), params)
     end
 
     #http://developer.ebay.com/DevZone/shopping/docs/CallRef/FindProducts.html
@@ -134,8 +133,8 @@ module ShopsApi
 
     private
     def build_request_url(service, params=nil)
-      url = "#{self.class.base_url}?callname=#{service}&appid=#{Rebay::Api.app_id}&version=#{VERSION}&responseencoding=JSON"
-      url += build_rest_payload({siteid: Rebay::Api.default_site_id}.merge(params))
+      url = "#{self.class.base_url}?callname=#{service}&appid=#{ShopApi::Ebay.app_id}&version=#{VERSION}&responseencoding=JSON"
+      url += build_rest_payload({siteid: ShopApi::Ebay.default_site_id}.merge(params))
       return url
     end
   end

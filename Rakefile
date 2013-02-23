@@ -3,10 +3,10 @@ require "rake"
 begin
   require "jeweler"
   Jeweler::Tasks.new do |gem|
-    gem.name = "shopsapi"
+    gem.name = "shopapi"
     gem.summary = "JSON response for eBay FindingAPI, ShoppingApi and Amazon Product Advertising API"
-    gem.homepage = "https://github.com/mcmbrest/shopsapi.git"
-    gem.authors = ["MCM"]
+    gem.homepage = "https://github.com/mcmbrest/shopapi.git"
+    gem.authors = ["Mihail Muhov"]
     gem.files = Dir["*", "{lib}/**/*"]
     gem.add_dependency("json")
   end
