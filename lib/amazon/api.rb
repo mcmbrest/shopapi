@@ -17,9 +17,9 @@ module ShopApi
     
     OPENSSL_DIGEST = OpenSSL::Digest::Digest.new( 'sha256' ) if OPENSSL_DIGEST_SUPPORT
     
-    @@options = {
-      :version => "2011-08-01",
-      :service => "AWSECommerceService"
+    @@request_options = {
+      :Version => "2011-08-01",
+      :Service => "AWSECommerceService"
     }
     
     @@debug = false
@@ -35,16 +35,6 @@ module ShopApi
         @@options = opts
       end
       
-      # Get debug flag.
-      def debug
-        @@debug
-      end
-      
-      # Set debug flag to true or false.
-      def debug=(dbg)
-        @@debug = dbg
-      end
-      
       def configure(&proc)
         raise ArgumentError, "Block is required." unless block_given?
         yield @@options
@@ -52,17 +42,6 @@ module ShopApi
     end
     
     protected
-      def log(s)
-        return unless self.class.debug
-        if defined? RAILS_DEFAULT_LOGGER
-          RAILS_DEFAULT_LOGGER.error(s)
-        elsif defined? LOGGER
-          LOGGER.error(s)
-        else
-          puts s
-        end
-      end
-
       def get_response(url)
         res = Net::HTTP.get_response(URI::parse(url))
         unless res.kind_of? Net::HTTPSuccess
@@ -78,8 +57,7 @@ module ShopApi
         secret_key = opts.delete(:AWS_secret_key)
         request_host = URI.parse(request_url).host
         
-        qs = ''
-        
+        opts.merge!(@@request_options)
         opts = opts.collect do |a,b| 
           [camelize(a.to_s), b.to_s] 
         end
@@ -87,30 +65,24 @@ module ShopApi
         opts = opts.sort do |c,d| 
           c[0].to_s <=> d[0].to_s
         end
-        
-        opts.each do |e| 
-          log "Adding #{e[0]}=#{e[1]}"
-          next unless e[1]
-          e[1] = e[1].join(',') if e[1].is_a? Array
-          # v = URI.encode(e[1].to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
-          v = self.url_encode(e[1].to_s)
-          qs << "&" unless qs.length == 0
-          qs << "#{e[0]}=#{v}"
+        opts = Hash[opts]
+
+        payload = ''
+        unless opts.nil?
+          opts.keys.each do |key|
+            payload += "&" unless payload.length == 0
+            s = URI.escape "#{key}=#{opts[key]}"
+            payload += URI.escape(s, '&')
+          end
         end
-        
+
         signature = ''
         unless secret_key.nil?
           request_to_sign="GET\n#{request_host}\n/onca/xml\n#{qs}"
           signature = "&Signature=#{sign_request(request_to_sign, secret_key)}"
         end
 
-        "#{request_url}?#{qs}#{signature}"
-      end
-      
-      def url_encode(string)
-        string.gsub( /([^a-zA-Z0-9_.~-]+)/ ) do
-          '%' + $1.unpack( 'H2' * $1.bytesize ).join( '%' ).upcase
-        end
+        "#{request_url}?#{payload}#{signature}"
       end
       
       def camelize(s)
