@@ -63,7 +63,6 @@ module ShopApi
       
       # Include other required options
       opts[:timestamp] = Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-      opts[:ResponseGroup] = 'Medium'
 
       request_url = prepare_url(opts)
       log "Request URL: #{request_url}"
