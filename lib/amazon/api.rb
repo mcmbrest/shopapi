@@ -78,7 +78,7 @@ module ShopApi
 
         signature = ''
         unless secret_key.nil?
-          request_to_sign="GET\n#{request_host}\n/onca/xml\n#{qs}"
+          request_to_sign="GET\n#{request_host}\n/onca/xml\n#{payload}"
           signature = "&Signature=#{sign_request(request_to_sign, secret_key)}"
         end
 
