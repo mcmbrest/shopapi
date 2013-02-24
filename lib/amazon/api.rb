@@ -18,12 +18,10 @@ module ShopApi
     OPENSSL_DIGEST = OpenSSL::Digest::Digest.new( 'sha256' ) if OPENSSL_DIGEST_SUPPORT
     
     @@request_options = {
-      :Version => "2011-08-01",
-      :Service => "AWSECommerceService"
+      :version => "2011-08-01",
+      :service => "AWSECommerceService"
     }
     
-    @@debug = false
-
     class << self
       # Default search options
       def options
@@ -42,6 +40,7 @@ module ShopApi
     end
     
     protected
+
       def get_response(url)
         res = Net::HTTP.get_response(URI::parse(url))
         unless res.kind_of? Net::HTTPSuccess
@@ -65,24 +64,30 @@ module ShopApi
         opts = opts.sort do |c,d| 
           c[0].to_s <=> d[0].to_s
         end
-        opts = Hash[opts]
-
-        payload = ''
-        unless opts.nil?
-          opts.keys.each do |key|
-            payload += "&" unless payload.length == 0
-            s = URI.escape "#{key}=#{opts[key]}"
-            payload += URI.escape(s, '&')
-          end
+        
+        qs = ''
+        opts.each do |e| 
+          log "Adding #{e[0]}=#{e[1]}"
+          next unless e[1]
+          e[1] = e[1].join(',') if e[1].is_a? Array
+          v = self.url_encode(e[1].to_s)
+          qs << "&" unless qs.length == 0
+          qs << "#{e[0]}=#{v}"
         end
-
+        
         signature = ''
         unless secret_key.nil?
-          request_to_sign="GET\n#{request_host}\n/onca/xml\n#{payload}"
+          request_to_sign="GET\n#{request_host}\n/onca/xml\n#{qs}"
           signature = "&Signature=#{sign_request(request_to_sign, secret_key)}"
         end
 
-        "#{request_url}?#{payload}#{signature}"
+        "#{request_url}?#{qs}#{signature}"
+      end
+      
+      def url_encode(string)
+        string.gsub( /([^a-zA-Z0-9_.~-]+)/ ) do
+          '%' + $1.unpack( 'H2' * $1.bytesize ).join( '%' ).upcase
+        end
       end
       
       def camelize(s)
