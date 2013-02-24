@@ -67,7 +67,6 @@ module ShopApi
         
         qs = ''
         opts.each do |e| 
-          log "Adding #{e[0]}=#{e[1]}"
           next unless e[1]
           e[1] = e[1].join(',') if e[1].is_a? Array
           v = self.url_encode(e[1].to_s)
