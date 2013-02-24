@@ -16,9 +16,8 @@ module ShopApi
 
     # Search an item by ASIN no.
     def item_lookup(opts = {})
-      raise ArgumentError unless item_id
+      raise ArgumentError unless opts[:ItemId]
       opts[:Operation] = 'ItemLookup'
-      opts[:ItemId] = item_id
       
       response = get_response(bild_request(opts))
       response.trim(:ItemLookupResponse)
@@ -30,9 +29,8 @@ module ShopApi
 
     # Search a browse node by BrowseNodeId
     def browse_node_lookup(opts = {})
-      raise ArgumentError unless browse_node_id
+      raise ArgumentError unless opts[:BrowseNodeId]
       opts[:Operation] = 'BrowseNodeLookup'
-      opts[:BrowseNodeId] = browse_node_id
       
       response = get_response(bild_request(opts))
       response.trim(:BrowseNodeLookupResponse)
@@ -44,9 +42,8 @@ module ShopApi
 
     # Search a similar items node by ItemId
     def similarity_lookup(opts = {})
-      raise ArgumentError unless item_id
+      raise ArgumentError unless opts[:ItemId]
       opts[:Operation] = 'SimilarityLookup'
-      opts[:ItemId] = item_id
       
       response = get_response(bild_request(opts))
       response.trim(:SimilarityLookupResponse)
