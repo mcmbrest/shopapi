@@ -54,7 +54,7 @@ module ShopApi
       def prepare_url(opts)
         request_url = 'http://ecs.amazonaws.com/onca/xml'
 
-        secret_key = opts.delete(:AWS_secret_key)
+        secret_key = opts.delete(:AWSSecretKey)
         request_host = URI.parse(request_url).host
         
         opts.merge!(@@request_options)
