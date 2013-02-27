@@ -52,6 +52,70 @@ module ShopApi
       end
       return response
     end    
+
+    # Create remote cart
+    def cart_create(opts = {})
+      opts[:Operation] = 'CartCreate'
+      
+      response = get_response(bild_request(opts))
+      response.trim(:CartCreateResponse)
+      if response.response.has_key?('Cart') && response.response['Cart'].has_key?('CartItems') && response.response['Cart']['CartItems'].has_key?('CartItem')
+        response.results = response.response['Cart']['CartItems']['CartItem']
+      end
+      return response
+    end    
+
+    # Add items by ASIN on OfferListingID to remote cart
+    def cart_add(opts = {})
+      raise ArgumentError unless opts[:CartId] && opts[:HMAC]
+      opts[:Operation] = 'CartAdd'
+      
+      response = get_response(bild_request(opts))
+      response.trim(:CartAddResponse)
+      if response.response.has_key?('Cart') && response.response['Cart'].has_key?('CartItems') && response.response['Cart']['CartItems'].has_key?('CartItem')
+        response.results = response.response['Cart']['CartItems']['CartItem']
+      end
+      return response
+    end    
+
+    # Modify quantity items by CartItemID in remote cart
+    def cart_modify(opts = {})
+      raise ArgumentError unless opts[:CartId] && opts[:HMAC]
+      opts[:Operation] = 'CartModify'
+      
+      response = get_response(bild_request(opts))
+      response.trim(:CartModifyResponse)
+      if response.response.has_key?('Cart') && response.response['Cart'].has_key?('CartItems') && response.response['Cart']['CartItems'].has_key?('CartItem')
+        response.results = response.response['Cart']['CartItems']['CartItem']
+      end
+      return response
+    end    
+
+    # Get all items in remote cart
+    def cart_get(opts = {})
+      raise ArgumentError unless opts[:CartId] && opts[:HMAC]
+      opts[:Operation] = 'CartGet'
+      
+      response = get_response(bild_request(opts))
+      response.trim(:CartGetResponse)
+      if response.response.has_key?('Cart') && response.response['Cart'].has_key?('CartItems') && response.response['Cart']['CartItems'].has_key?('CartItem')
+        response.results = response.response['Cart']['CartItems']['CartItem']
+      end
+      return response
+    end    
+
+    # Clear remote cart
+    def cart_clear(opts = {})
+      raise ArgumentError unless opts[:CartId] && opts[:HMAC]
+      opts[:Operation] = 'CartClear'
+      
+      response = get_response(bild_request(opts))
+      response.trim(:CartClearResponse)
+      if response.response.has_key?('Cart')
+        response.results = response.response['Cart']
+      end
+      return response
+    end    
     
     # Generic send request to ECS REST service. You have to specify the :operation parameter.
     def bild_request(opts)
