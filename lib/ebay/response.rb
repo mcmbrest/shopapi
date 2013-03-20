@@ -1,6 +1,6 @@
 module ShopApi
   class Response
-    attr_accessor :response
+    attr_accessor :response, :results
     
     def initialize(json_response)
       @response = transform_json_response(json_response)
