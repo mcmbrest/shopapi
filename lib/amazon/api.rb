@@ -17,11 +17,6 @@ module ShopApi
     
     OPENSSL_DIGEST = OpenSSL::Digest::Digest.new( 'sha256' ) if OPENSSL_DIGEST_SUPPORT
     
-    @@request_options = {
-      :version => "2011-08-01",
-      :service => "AWSECommerceService"
-    }
-    
     class << self
       # Default search options
       def options
@@ -49,14 +44,10 @@ module ShopApi
         ShopApi::Response.new(JSON.parse(Hash.from_xml(res.body).to_json))
       end
       
-
-      def prepare_url(opts)
-        request_url = 'http://ecs.amazonaws.com/onca/xml'
-
+      def prepare_url(opts, request_url)
         secret_key = opts.delete(:AWSSecretKey)
         request_host = URI.parse(request_url).host
         
-        opts.merge!(@@request_options)
         opts = opts.collect do |a,b| 
           [camelize(a.to_s), b.to_s] 
         end

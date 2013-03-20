@@ -3,8 +3,8 @@ module ShopApi
     # Search amazon items with search terms. Default search index option is 'Books'.
     # For other search type other than keywords, please specify :type => [search type param name].
     def item_search(opts = {})
+      raise ArgumentError unless opts[:SearchIndex]
       opts[:Operation] = 'ItemSearch'
-      opts[:SearchIndex] ||= 'All'
       
       response = get_response(bild_request(opts))
       response.trim(:ItemSearchResponse)
@@ -123,8 +123,13 @@ module ShopApi
       
       # Include other required options
       opts[:Timestamp] = Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+      opts[:Version] = "2011-08-01"
+      opts[:Service] = "AWSECommerceService"
+      opts.delete(:SellerId)
+      
+      url = 'http://ecs.amazonaws.com/onca/xml'
 
-      request_url = prepare_url(opts)
+      request_url = prepare_url(opts, url)
       
       return request_url 
     end
