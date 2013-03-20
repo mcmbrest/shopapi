@@ -26,6 +26,9 @@ module ShopApi
       @response.response.any?{|k,v| v.class == Hash && v.has_key?('Request') && v['Request']['IsValid'] == "True"}
     end
 
+    def without_error?
+      error.blank?
+    end
     # Return true if response has an error.
     def has_error?
       !(error.blank?)
