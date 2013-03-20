@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mihail Muhov"]
-  s.date = "2013-02-23"
+  s.date = "2013-03-20"
   s.extra_rdoc_files = [
     "README.md"
   ]
@@ -21,15 +21,17 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "init.rb",
-    "lib/amazon/amazon.rb",
     "lib/amazon/api.rb",
+    "lib/amazon/ecs.rb",
+    "lib/amazon/mws.rb",
     "lib/ebay/api.rb",
     "lib/ebay/finding.rb",
     "lib/ebay/merchandising.rb",
     "lib/ebay/railtie.rb",
     "lib/ebay/response.rb",
     "lib/ebay/shopping.rb",
-    "lib/shopsapi.rb"
+    "lib/shopsapi.rb",
+    "shopsapi-0.0.1.gem"
   ]
   s.homepage = "https://github.com/mcmbrest/shopapi.git"
   s.require_paths = ["lib"]
