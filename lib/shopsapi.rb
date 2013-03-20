@@ -5,5 +5,5 @@ require 'ebay/merchandising'
 require 'ebay/response'
 
 require 'amazon/api'
-require 'amazon/ecs'
+require 'amazon/amazon'
 #require 'amazon/mws'
